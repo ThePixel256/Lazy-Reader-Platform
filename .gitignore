@@ -1,0 +1,16 @@
+/node_modules/
+/dist/
+#env
+.env
+/.idea/discord.xml
+/.idea/vcs.xml
+/.idea/ShopPC.iml
+/.idea/material_theme_project_new.xml
+/.idea/modules.xml
+
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+/.idea/workspace.xml
