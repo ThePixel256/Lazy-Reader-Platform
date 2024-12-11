@@ -4,7 +4,7 @@ import {Member} from "../model/entities/Member";
 import {GetAllMembersByBoardIdQuery} from "../model/queries/GetAllMembersByBoardIdQuery";
 
 export interface IBoardQueryService{
-    getAllBoardsByUserId(command: GetAllBoardsByUserIdQuery): Promise<Board[]>;
+    getAllBoardsByUserId(query: GetAllBoardsByUserIdQuery): Promise<Board[]>;
 
-    getAllMembersByBoardId(command: GetAllMembersByBoardIdQuery): Promise<Member[]>;
+    getAllMembersByBoardId(query: GetAllMembersByBoardIdQuery): Promise<Member[]>;
 }
