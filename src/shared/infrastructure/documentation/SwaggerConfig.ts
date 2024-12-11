@@ -93,6 +93,66 @@ export function swaggerConfig(app: Application){
                             },
                         },
                     },
+                    TaskResource: {
+                        type: "object",
+                        properties: {
+                            id: {
+                                type: "integer",
+                                description: "The ID of the task",
+                                example: 1,
+                            },
+                            title: {
+                                type: "string",
+                                description: "The title of the task",
+                                example: "Complete the report",
+                            },
+                            description: {
+                                type: "string",
+                                description: "A brief description of the task",
+                                example: "Complete the financial report for Q1",
+                            },
+                            userId: {
+                                type: "integer",
+                                description: "The ID of the user assigned to the task",
+                                example: 101,
+                            },
+                            boardId: {
+                                type: "integer",
+                                description: "The ID of the board associated with the task",
+                                example: 42,
+                            },
+                            status: {
+                                type: "string",
+                                description: "The current status of the task",
+                                example: "Pending",
+                            },
+                        },
+                    },
+                    CreateTaskResource: {
+                        type: "object",
+                        properties: {
+                            title: {
+                                type: "string",
+                                description: "The title of the task",
+                                example: "Complete the report",
+                            },
+                            description: {
+                                type: "string",
+                                description: "A brief description of the task",
+                                example: "Complete the financial report for Q1",
+                            },
+                            userId: {
+                                type: "integer",
+                                description: "The ID of the user assigned to the task",
+                                example: 101,
+                            },
+                            boardId: {
+                                type: "integer",
+                                description: "The ID of the board associated with the task",
+                                example: 42,
+                            },
+                        },
+                    },
                 },
                 securitySchemes: {
                     bearerAuth: {
