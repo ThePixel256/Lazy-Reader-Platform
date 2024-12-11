@@ -2,7 +2,6 @@ import express, {Application} from "express";
 import {UserRepository} from "./iam/infrastructure/persistence/orm/repositories/UserRepository";
 import {AppDataSource} from "./shared/infrastructure/configuration/Database";
 import {UserCommandService} from "./iam/application/internal/commandservices/UserCommandService";
-import {UserQueryService} from "./iam/application/internal/queryservices/UserQueryService";
 import {AuthenticationController} from "./iam/interfaces/rest/AuthenticationController";
 import {swaggerConfig} from "./shared/infrastructure/documentation/SwaggerConfig";
 import {BoardRepository} from "./board/infrastructure/persistence/orm/repositories/BoardRepository";
