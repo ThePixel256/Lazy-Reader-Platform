@@ -26,7 +26,7 @@ export const createApp = (): Application => {
     // Dependencies
     const userRepository = new UserRepository(AppDataSource);
     const userCommandService = new UserCommandService(userRepository);
-    const userQueryService = new UserQueryService(userRepository);
+    //const userQueryService = new UserQueryService(userRepository);
     const userController = new AuthenticationController(userCommandService);
 
     const boardRepository = new BoardRepository(AppDataSource);

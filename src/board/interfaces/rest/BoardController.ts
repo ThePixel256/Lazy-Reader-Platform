@@ -4,8 +4,6 @@ import {BoardQueryService} from "../../application/internal/queryservices/BoardQ
 import {CreateBoardResource} from "./resources/CreateBoardResource";
 import {CreateBoardCommandFromResourceAssembler} from "./transform/CreateBoardCommandFromResourceAssembler";
 import {BoardResourceFromEntityAssembler} from "./transform/BoardResourceFromEntityAssembler";
-import {CreateMemberResource} from "./resources/CreateMemberResource";
-import {CreateMemberCommandFromResourceAssembler} from "./transform/CreateMemberCommandFromResourceAssembler";
 import {GetAllBoardsByUserIdQuery} from "../../domain/model/queries/GetAllBoardsByUserIdQuery";
 
 export class BoardController {
