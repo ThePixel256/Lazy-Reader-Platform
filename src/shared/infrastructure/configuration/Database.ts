@@ -4,6 +4,7 @@ import {User} from "../../../iam/domain/model/aggregates/User";
 import {Board} from "../../../board/domain/model/aggregates/Board";
 import {Member} from "../../../board/domain/model/entities/Member";
 import {Task} from "../../../task/domain/model/aggregates/Task";
+import {Profile} from "../../../profile/domain/model/aggregates/Profile";
 
 const config = TypeOrmConfigFactory.createConfig();
 
@@ -18,7 +19,7 @@ export const AppDataSource = new DataSource({
     username: config.username,
     password: config.password,
     database: config.database,
-    entities: [User, Board, Member, Task],
+    entities: [User, Board, Member, Task, Profile],
     synchronize: true,
     logging: false
 });
