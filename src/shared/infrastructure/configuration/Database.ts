@@ -1,6 +1,8 @@
 import {TypeOrmConfigFactory} from "../persistence/orm/configuration/TypeOrmConfigFactory";
 import {DataSource} from "typeorm";
 import {User} from "../../../iam/domain/model/aggregates/User";
+import {Board} from "../../../board/domain/model/aggregates/Board";
+import {Member} from "../../../board/domain/model/entities/Member";
 
 const config = TypeOrmConfigFactory.createConfig();
 
@@ -15,7 +17,7 @@ export const AppDataSource = new DataSource({
     username: config.username,
     password: config.password,
     database: config.database,
-    entities: [User],
+    entities: [User, Board, Member],
     synchronize: true,
     logging: false
 });
