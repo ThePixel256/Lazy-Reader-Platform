@@ -3,7 +3,6 @@ import {GetProfileByIdQuery} from "../../../domain/model/queries/GetProfileByIdQ
 import {ProfileRepository} from "../../../infrastructure/persistence/orm/repositories/ProfileRepository";
 import {Profile} from "../../../domain/model/aggregates/Profile";
 import {Nullable} from "../../../../shared/domain/types/Nullable";
-import {query} from "express";
 import {GetProfileByUserIdQuery} from "../../../domain/model/queries/GetProfileByUserIdQuery";
 
 export class ProfileQueryService implements IProfileQueryService {
