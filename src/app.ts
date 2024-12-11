@@ -9,6 +9,10 @@ import {BoardCommandService} from "./board/application/internal/commandservices/
 import {BoardQueryService} from "./board/application/internal/queryservices/BoardQueryService";
 import {BoardController} from "./board/interfaces/rest/BoardController";
 import {BoardMemberController} from "./board/interfaces/rest/BoardMemberController";
+import {TaskRepository} from "./task/infrastructure/persistence/orm/repositories/TaskRepository";
+import {TaskCommandService} from "./task/application/internal/commandservices/TaskCommandService";
+import {TaskQueryService} from "./task/application/internal/queryservices/TaskQueryService";
+import {TaskController} from "./task/interfaces/rest/TaskController";
 
 export const createApp = (): Application => {
     const app = express();
@@ -34,10 +38,16 @@ export const createApp = (): Application => {
     const boardController = new BoardController(boardCommandService, boardQueryService);
     const boardMemberController = new BoardMemberController(boardCommandService, boardQueryService);
 
+    const taskRepository = new TaskRepository(AppDataSource);
+    const taskCommandService = new TaskCommandService(taskRepository);
+    const taskQueryService = new TaskQueryService(taskRepository);
+    const taskController = new TaskController(taskCommandService, taskQueryService);
+
     // Routes
     app.use('/api/v1/authentication', userController.getRoutes());
     app.use('/api/v1/boards', boardController.getRoutes());
     app.use('/api/v1/boards', boardMemberController.getRoutes());
+    app.use('/api/v1/tasks', taskController.getRoutes());
 
     // Swagger UI
     swaggerConfig(app);
