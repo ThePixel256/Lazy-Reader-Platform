@@ -153,6 +153,61 @@ export function swaggerConfig(app: Application){
                             },
                         },
                     },
+                    ProfileResource: {
+                        type: "object",
+                        properties: {
+                            id: {
+                                type: "integer",
+                                description: "The ID of the profile",
+                                example: 1,
+                            },
+                            firstName: {
+                                type: "string",
+                                description: "The first name of the user",
+                                example: "John",
+                            },
+                            lastName: {
+                                type: "string",
+                                description: "The last name of the user",
+                                example: "Doe",
+                            },
+                            email: {
+                                type: "string",
+                                description: "The email address of the user",
+                                example: "john.doe@example.com",
+                            },
+                            userId: {
+                                type: "integer",
+                                description: "The ID of the user associated with this profile",
+                                example: 101,
+                            },
+                        },
+                    },
+                    CreateProfileResource: {
+                        type: "object",
+                        properties: {
+                            firstName: {
+                                type: "string",
+                                description: "The first name of the user",
+                                example: "John",
+                            },
+                            lastName: {
+                                type: "string",
+                                description: "The last name of the user",
+                                example: "Doe",
+                            },
+                            email: {
+                                type: "string",
+                                description: "The email address of the user",
+                                example: "john.doe@example.com",
+                            },
+                            userId: {
+                                type: "integer",
+                                description: "The ID of the user associated with this profile",
+                                example: 101,
+                            },
+                        },
+                    },
                 },
                 securitySchemes: {
                     bearerAuth: {
