@@ -13,6 +13,10 @@ import {TaskRepository} from "./task/infrastructure/persistence/orm/repositories
 import {TaskCommandService} from "./task/application/internal/commandservices/TaskCommandService";
 import {TaskQueryService} from "./task/application/internal/queryservices/TaskQueryService";
 import {TaskController} from "./task/interfaces/rest/TaskController";
+import {ProfileRepository} from "./profile/infrastructure/persistence/orm/repositories/ProfileRepository";
+import {ProfileCommandService} from "./profile/application/internal/commandservices/ProfileCommandService";
+import {ProfileQueryService} from "./profile/application/internal/queryservices/ProfileQueryService";
+import {ProfileController} from "./profile/interfaces/rest/ProfileController";
 
 export const createApp = (): Application => {
     const app = express();
@@ -43,11 +47,17 @@ export const createApp = (): Application => {
     const taskQueryService = new TaskQueryService(taskRepository);
     const taskController = new TaskController(taskCommandService, taskQueryService);
 
+    const profileRepository = new ProfileRepository(AppDataSource);
+    const profileCommandService = new ProfileCommandService(profileRepository);
+    const profileQueryService = new ProfileQueryService(profileRepository);
+    const profileController = new ProfileController(profileCommandService, profileQueryService);
+
     // Routes
     app.use('/api/v1/authentication', userController.getRoutes());
     app.use('/api/v1/boards', boardController.getRoutes());
     app.use('/api/v1/boards', boardMemberController.getRoutes());
     app.use('/api/v1/tasks', taskController.getRoutes());
+    app.use('/api/v1/profiles', profileController.getRoutes());
 
     // Swagger UI
     swaggerConfig(app);
