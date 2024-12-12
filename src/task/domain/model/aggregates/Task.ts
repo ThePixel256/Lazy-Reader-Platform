@@ -3,6 +3,7 @@ import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 import {UserId} from "../valueobjects/UserId";
 import {BoardId} from "../valueobjects/BoardId";
 import {TaskStatus} from "../valueobjects/TaskStatus";
+import {UpdateTaskCommand} from "../commands/UpdateTaskCommand";
 
 @Entity('tasks')
 export class Task extends AggregateRoot {
@@ -37,6 +38,21 @@ export class Task extends AggregateRoot {
         this.status = TaskStatus.TODO;
     }
 
+    public update(command: UpdateTaskCommand){
+        if(command.title){
+            this.title = command.title;
+        }
+        if(command.description){
+            this.description = command.description;
+        }
+        if(command.status){
+            this.status = this.convertStatusToEnum(command.status);
+        }
+        if(command.userId){
+            this.userId = new UserId(command.userId);
+        }
+    }
+
     public getConvertedStatusToString() {
         if (this.status === TaskStatus.TODO) {
             return 'todo';
@@ -48,5 +64,18 @@ export class Task extends AggregateRoot {
             return 'done';
         }
         return 'unknown';
+    }
+
+    private convertStatusToEnum(status: string): TaskStatus {
+        switch (status) {
+            case 'todo':
+                return TaskStatus.TODO;
+            case 'in progress':
+                return TaskStatus.IN_PROGRESS;
+            case 'done':
+                return TaskStatus.DONE;
+            default:
+                throw new Error('Invalid task status');
+        }
     }
 }
