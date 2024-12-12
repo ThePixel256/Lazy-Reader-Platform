@@ -1,16 +1,17 @@
 import {IBoardQueryService} from "../../../domain/services/IBoardQueryService";
-import {GetAllBoardsByUserIdQuery} from "../../../domain/model/queries/GetAllBoardsByUserIdQuery";
+import {GetAllBoardsByOwnerIdQuery} from "../../../domain/model/queries/GetAllBoardsByOwnerIdQuery";
 import {Board} from "../../../domain/model/aggregates/Board";
 import {Member} from "../../../domain/model/entities/Member";
 import {BoardRepository} from "../../../infrastructure/persistence/orm/repositories/BoardRepository";
 import {GetAllMembersByBoardIdQuery} from "../../../domain/model/queries/GetAllMembersByBoardIdQuery";
+import {GetAllBoardsByMemberIdQuery} from "../../../domain/model/queries/GetAllBoardsByMemberIdQuery";
 
 export class BoardQueryService implements IBoardQueryService {
     constructor(private boardRepository: BoardRepository) {
     }
 
-    async getAllBoardsByUserId(query: GetAllBoardsByUserIdQuery): Promise<Board[]> {
-        return await this.boardRepository.findAllByUserId(query.userId);
+    async getAllBoardsByOwnerId(query: GetAllBoardsByOwnerIdQuery): Promise<Board[]> {
+        return await this.boardRepository.findAllByOwnerId(query.ownerId);
     }
 
     async getAllMembersByBoardId(query: GetAllMembersByBoardIdQuery): Promise<Member[]> {
@@ -19,4 +20,7 @@ export class BoardQueryService implements IBoardQueryService {
         return board.members;
     }
 
+   async getAllBoardsByMemberId(query: GetAllBoardsByMemberIdQuery): Promise<Board[]> {
+        return await this.boardRepository.findAllByNotOwnerIdAndMembersIncludesUserId(query.memberId);
+    }
 }
