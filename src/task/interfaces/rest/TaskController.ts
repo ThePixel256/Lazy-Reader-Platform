@@ -5,6 +5,9 @@ import {CreateTaskResource} from "./resources/CreateTaskResource";
 import {CreateTaskCommandFromResourceAssembler} from "./transform/CreateTaskCommandFromResourceAssembler";
 import {TaskResourceFromEntityAssembler} from "./transform/TaskResourceFromEntityAssembler";
 import {GetAllTasksByBoardIdQuery} from "../../domain/model/queries/GetAllTasksByBoardIdQuery";
+import {UpdateTaskCommandFromResourceAssembler} from "./transform/UpdateTaskCommandFromResourceAssembler";
+import {UpdateTaskResource} from "./resources/UpdateTaskResource";
+import {DeleteTaskCommand} from "../../domain/model/commands/DeleteTaskCommand";
 
 export class TaskController {
     private readonly router: Router;
@@ -72,6 +75,72 @@ export class TaskController {
          *         description: Internal Server Error.
          */
         this.router.get('', this.getAllTasksByBoardId.bind(this));
+
+        /**
+         * @swagger
+         * /api/v1/tasks/{taskId}:
+         *   patch:
+         *     summary: Update a task
+         *     tags: [Tasks]
+         *     parameters:
+         *       - in: path
+         *         name: taskId
+         *         required: true
+         *         schema:
+         *           type: integer
+         *         description: The ID of the task to update.
+         *     requestBody:
+         *       required: true
+         *       content:
+         *         application/json:
+         *           schema:
+         *             $ref: '#/components/schemas/UpdateTaskResource'
+         *     responses:
+         *       201:
+         *         description: Task updated successfully.
+         *         content:
+         *           application/json:
+         *             schema:
+         *               $ref: '#/components/schemas/TaskResource'
+         *       400:
+         *         description: Bad Request.
+         *       500:
+         *         description: Internal Server Error.
+         */
+        this.router.patch('/:taskId', this.updateTask.bind(this));
+
+        /**
+         * @swagger
+         * /api/v1/tasks/{taskId}:
+         *   delete:
+         *     summary: Delete a task
+         *     tags: [Tasks]
+         *     parameters:
+         *       - in: path
+         *         name: taskId
+         *         required: true
+         *         schema:
+         *           type: integer
+         *         description: The ID of the task to delete.
+         *     responses:
+         *       200:
+         *         description: Task deleted successfully.
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         *               properties:
+         *                 message:
+         *                   type: string
+         *                   description: Message indicating the task was deleted successfully.
+         *                 task:
+         *                   $ref: '#/components/schemas/TaskResource'
+         *       400:
+         *         description: Bad Request.
+         *       500:
+         *         description: Internal Server Error.
+         */
+        this.router.delete('/:taskId', this.deleteTask.bind(this));
     }
 
     public getRoutes() {
@@ -85,6 +154,34 @@ export class TaskController {
             const task = await this.taskCommandService.createTask(createTaskCommand);
             const taskResource = TaskResourceFromEntityAssembler.toResourceFromEntity(task);
             res.status(201).json(taskResource);
+        } catch (error) {
+            const err = error as Error;
+            console.error('Error:', err.message);
+            res.status(500).json({error: 'Internal Server Error', details: err.message});
+        }
+    }
+
+    async updateTask(req: any, res: any) {
+        try {
+            const taskId = req.params.taskId;
+            const resource: UpdateTaskResource = req.body;
+            const updateTaskCommand = UpdateTaskCommandFromResourceAssembler.toCommandFromResource(resource, taskId);
+            const task = await this.taskCommandService.updateTask(updateTaskCommand);
+            const taskResource = TaskResourceFromEntityAssembler.toResourceFromEntity(task);
+            res.status(201).json(taskResource);
+        } catch (error) {
+            const err = error as Error;
+            console.error('Error:', err.message);
+            res.status(500).json({error: 'Internal Server Error', details: err.message});
+        }
+    }
+
+    async deleteTask(req: any, res: any) {
+        try {
+            const taskId = req.params.taskId;
+            const deleteTaskCommand = new DeleteTaskCommand(taskId);
+            const deletedTask = await this.taskCommandService.deleteTask(deleteTaskCommand);
+            res.status(200).json({message: 'Task deleted successfully', taskId: deletedTask});
         } catch (error) {
             const err = error as Error;
             console.error('Error:', err.message);
