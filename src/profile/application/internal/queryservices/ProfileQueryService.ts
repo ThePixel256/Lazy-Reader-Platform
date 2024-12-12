@@ -4,6 +4,7 @@ import {ProfileRepository} from "../../../infrastructure/persistence/orm/reposit
 import {Profile} from "../../../domain/model/aggregates/Profile";
 import {Nullable} from "../../../../shared/domain/types/Nullable";
 import {GetProfileByUserIdQuery} from "../../../domain/model/queries/GetProfileByUserIdQuery";
+import {GetAllProfilesQuery} from "../../../domain/model/queries/GetAllProfilesQuery";
 
 export class ProfileQueryService implements IProfileQueryService {
     constructor(private profileRepository: ProfileRepository) {
@@ -15,5 +16,9 @@ export class ProfileQueryService implements IProfileQueryService {
 
     async getProfileByUserId(query: GetProfileByUserIdQuery): Promise<Nullable<Profile>> {
         return await this.profileRepository.findByUserId(query.userId);
+    }
+
+    async getAllProfiles(query: GetAllProfilesQuery): Promise<Profile[]> {
+        return await this.profileRepository.findAll();
     }
 }
