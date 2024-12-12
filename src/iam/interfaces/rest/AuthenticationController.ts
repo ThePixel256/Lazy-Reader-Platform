@@ -21,46 +21,26 @@ export class AuthenticationController{
          *   post:
          *     summary: Authenticate a user
          *     tags: [Authentication]
-         *     description: Verifies the user credentials and returns an authentication token.
+         *     description: Authenticate a user and return a token.
          *     requestBody:
          *       required: true
          *       content:
          *         application/json:
          *           schema:
-         *             type: object
-         *             properties:
-         *               username:
-         *                 type: string
-         *                 description: The username of the user.
-         *                 example: john_doe
-         *               password:
-         *                 type: string
-         *                 description: The password of the user.
-         *                 example: securepassword123
+         *             $ref: '#/components/schemas/SignInResource'
          *     responses:
          *       200:
          *         description: User authenticated successfully.
          *         content:
          *           application/json:
          *             schema:
-         *               type: object
-         *               properties:
-         *                 id:
-         *                   type: number
-         *                   description: User ID.
-         *                   example: 1
-         *                 username:
-         *                   type: string
-         *                   description: The username of the user.
-         *                   example: john_doe
-         *                 token:
-         *                   type: string
-         *                   description: Authentication token.
-         *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+         *               $ref: '#/components/schemas/AuthenticatedUserResource'
          *       400:
-         *         description: Bad request. Invalid input data.
+         *         description: Bad Request.
          *       401:
-         *         description: Unauthorized. Invalid credentials.
+         *         description: Unauthorized.
+         *       500:
+         *         description: Internal Server Error.
          */
         this.router.post('/sign-in', this.signIn.bind(this));
 
@@ -70,45 +50,24 @@ export class AuthenticationController{
          *   post:
          *     summary: Register a new user
          *     tags: [Authentication]
-         *     description: Creates a new user in the system.
+         *     description: Register a new user and create a profile.
          *     requestBody:
          *       required: true
          *       content:
          *         application/json:
          *           schema:
-         *             type: object
-         *             properties:
-         *               username:
-         *                 type: string
-         *                 description: The username of the user.
-         *                 example: john_doe
-         *               password:
-         *                 type: string
-         *                 description: The password of the user.
-         *                 minLength: 8
-         *                 example: securepassword123
+         *             $ref: '#/components/schemas/SignUpResource'
          *     responses:
          *       201:
-         *         description: User created successfully.
+         *         description: User registered successfully.
          *         content:
          *           application/json:
          *             schema:
-         *               type: object
-         *               properties:
-         *                 id:
-         *                   type: number
-         *                   description: User ID.
-         *                   example: 1
-         *                 username:
-         *                   type: string
-         *                   description: The username of the user.
-         *                   example: john_doe
-         *                 token:
-         *                   type: string
-         *                   description: Authentication token.
-         *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+         *               $ref: '#/components/schemas/AuthenticatedUserResource'
          *       400:
-         *         description: Bad request. Invalid input data.
+         *         description: Bad Request.
+         *       500:
+         *         description: Internal Server Error.
          */
         this.router.post('/sign-up', this.signUp.bind(this));
     }
