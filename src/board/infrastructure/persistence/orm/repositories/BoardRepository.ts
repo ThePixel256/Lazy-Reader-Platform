@@ -25,14 +25,23 @@ export class BoardRepository extends TypeOrmRepository<Board> implements IBoardR
         return await repository.findOne({ where: { id: board.id } });
     }
 
-    async findAllByUserId(userId: number): Promise<Board[]> {
+    async findAllByOwnerId(ownerId: number): Promise<Board[]> {
         const repository = await this.repository();
-        const userIdValue = new UserId(userId);
+        const userIdValue = new UserId(ownerId);
         return repository.find({ where: { ownerId: userIdValue } });
     }
 
     async findById(boardId: number): Promise<Nullable<Board>> {
         const repository = await this.repository();
         return repository.findOne({ where: { id: boardId }, relations: { members: true},});
+    }
+
+    async findAllByNotOwnerIdAndMembersIncludesUserId(ownerId: number): Promise<Board[]> {
+        const repository = await this.repository();
+        return repository.createQueryBuilder('board')
+            .leftJoinAndSelect('board.members', 'member')
+            .where('board.ownerIdValue != :ownerId', { ownerId: ownerId })
+            .andWhere('member.userIdValue = :ownerId', { ownerId: ownerId })
+            .getMany();
     }
 }

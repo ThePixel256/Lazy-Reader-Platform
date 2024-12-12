@@ -6,5 +6,6 @@ export interface IBoardRepository {
     update(board: Board): Promise<Nullable<Board>>;
     delete(boardId: number): Promise<Nullable<number>>;
     findById(boardId: number): Promise<Nullable<Board>>;
-    findAllByUserId(userId: number): Promise<Board[]>;
+    findAllByOwnerId(ownerId: number): Promise<Board[]>;
+    findAllByNotOwnerIdAndMembersIncludesUserId(ownerId: number): Promise<Board[]>;
 }
