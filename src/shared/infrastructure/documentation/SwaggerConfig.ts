@@ -18,6 +18,73 @@ export function swaggerConfig(app: Application){
             },
             components: {
                 schemas: {
+                    SignInResource: {
+                        type: "object",
+                        properties: {
+                            username: {
+                                type: "string",
+                                description: "The username of the user",
+                                example: "john_doe",
+                            },
+                            password: {
+                                type: "string",
+                                description: "The password of the user",
+                                example: "password123",
+                            },
+                        },
+                        required: ["username", "password"],
+                    },
+                    SignUpResource: {
+                        type: "object",
+                        properties: {
+                            username: {
+                                type: "string",
+                                description: "The username of the user",
+                                example: "john_doe",
+                            },
+                            password: {
+                                type: "string",
+                                description: "The password of the user",
+                                example: "password123",
+                            },
+                            firstName: {
+                                type: "string",
+                                description: "The first name of the user",
+                                example: "John",
+                            },
+                            lastName: {
+                                type: "string",
+                                description: "The last name of the user",
+                                example: "Doe",
+                            },
+                            email: {
+                                type: "string",
+                                description: "The email address of the user",
+                                example: "john.doe@example.com",
+                            }
+                        },
+                        required: ["username", "password", "firstName", "lastName", "email", "userId"],
+                    },
+                    AuthenticatedUserResource: {
+                        type: "object",
+                        properties: {
+                            id: {
+                                type: "integer",
+                                description: "The ID of the authenticated user",
+                                example: 1,
+                            },
+                            username: {
+                                type: "string",
+                                description: "The username of the authenticated user",
+                                example: "john_doe",
+                            },
+                            token: {
+                                type: "string",
+                                description: "The authentication token for the user",
+                                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+                            },
+                        },
+                    },
                     BoardResource: {
                         type: "object",
                         properties: {
@@ -151,6 +218,51 @@ export function swaggerConfig(app: Application){
                                 description: "The ID of the board associated with the task",
                                 example: 42,
                             },
+                        },
+                    },
+                    UpdateTaskResource: {
+                        type: "object",
+                        properties: {
+                            title: {
+                                type: "string",
+                                description: "The title of the task",
+                                example: "Complete the report",
+                            },
+                            description: {
+                                type: "string",
+                                description: "A brief description of the task",
+                                example: "Complete the financial report for Q1",
+                            },
+                            status: {
+                                type: "string",
+                                description: "The current status of the task",
+                                example: "Pending",
+                            },
+                            userId: {
+                                type: "integer",
+                                description: "The ID of the user assigned to the task",
+                                example: 101,
+                            },
+                        },
+                    },
+                    UserResource: {
+                        type: "object",
+                        properties: {
+                            id: {
+                                type: "integer",
+                                description: "The ID of the user",
+                                example: 1,
+                            },
+                            username: {
+                                type: "string",
+                                description: "The username of the user",
+                                example: "john_doe",
+                            },
+                            email: {
+                                type: "string",
+                                description: "The email address of the user",
+                                example: "john_doe@example.com"
+                            }
                         },
                     },
                     ProfileResource: {
