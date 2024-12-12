@@ -17,6 +17,9 @@ import {ProfileRepository} from "./profile/infrastructure/persistence/orm/reposi
 import {ProfileCommandService} from "./profile/application/internal/commandservices/ProfileCommandService";
 import {ProfileQueryService} from "./profile/application/internal/queryservices/ProfileQueryService";
 import {ProfileController} from "./profile/interfaces/rest/ProfileController";
+import {ProfileContextFacade} from "./profile/interfaces/acl/services/ProfileContextFacade";
+import {ExternalProfileService} from "./iam/application/internal/outboundservices/acl/ExternalProfileService";
+import {UnitOfWork} from "./shared/infrastructure/persistence/orm/repositories/UnitOfWork";
 
 export const createApp = (): Application => {
     const app = express();
@@ -31,8 +34,17 @@ export const createApp = (): Application => {
     app.use(express.json())
 
     // Dependencies
+    const unitOfWork = new UnitOfWork(AppDataSource);
+
+    const profileRepository = new ProfileRepository(AppDataSource);
+    const profileCommandService = new ProfileCommandService(profileRepository);
+    const profileQueryService = new ProfileQueryService(profileRepository);
+    const profileContextFacade = new ProfileContextFacade(profileCommandService);
+    const profileController = new ProfileController(profileCommandService, profileQueryService);
+
+    const externalProfileService = new ExternalProfileService(profileContextFacade);
     const userRepository = new UserRepository(AppDataSource);
-    const userCommandService = new UserCommandService(userRepository);
+    const userCommandService = new UserCommandService(userRepository, externalProfileService, unitOfWork);
     //const userQueryService = new UserQueryService(userRepository);
     const userController = new AuthenticationController(userCommandService);
 
@@ -46,11 +58,6 @@ export const createApp = (): Application => {
     const taskCommandService = new TaskCommandService(taskRepository);
     const taskQueryService = new TaskQueryService(taskRepository);
     const taskController = new TaskController(taskCommandService, taskQueryService);
-
-    const profileRepository = new ProfileRepository(AppDataSource);
-    const profileCommandService = new ProfileCommandService(profileRepository);
-    const profileQueryService = new ProfileQueryService(profileRepository);
-    const profileController = new ProfileController(profileCommandService, profileQueryService);
 
     // Routes
     app.use('/api/v1/authentication', userController.getRoutes());
