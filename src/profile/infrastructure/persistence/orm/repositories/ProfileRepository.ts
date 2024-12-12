@@ -35,4 +35,9 @@ export class ProfileRepository extends TypeOrmRepository<Profile> implements IPr
         const userIdValue = new UserId(userId);
         return repository.findOne({ where: { userId: userIdValue } });
     }
+
+    async findAll(): Promise<Profile[]> {
+        const repository = await this.repository();
+        return repository.find();
+    }
 }

@@ -7,4 +7,5 @@ export interface IProfileRepository {
     delete(profileId: number): Promise<Nullable<number>>;
     findById(profileId: number): Promise<Nullable<Profile>>;
     findByUserId(userId: number): Promise<Nullable<Profile>>;
+    findAll(): Promise<Profile[]>;
 }
