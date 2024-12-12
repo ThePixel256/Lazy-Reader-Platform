@@ -4,6 +4,8 @@ import {Task} from "../../../domain/model/aggregates/Task";
 import {TaskRepository} from "../../../infrastructure/persistence/orm/repositories/TaskRepository";
 import {UserId} from "../../../domain/model/valueobjects/UserId";
 import {BoardId} from "../../../domain/model/valueobjects/BoardId";
+import {UpdateTaskCommand} from "../../../domain/model/commands/UpdateTaskCommand";
+import {DeleteTaskCommand} from "../../../domain/model/commands/DeleteTaskCommand";
 
 export class TaskCommandService implements ITaskCommandService {
     constructor(private taskRepository: TaskRepository) {
@@ -16,16 +18,20 @@ export class TaskCommandService implements ITaskCommandService {
         return await this.taskRepository.save(newTask);
     }
 
-    /*private getTaskStatus(status: string): TaskStatus {
-        switch (status) {
-            case 'todo':
-                return TaskStatus.TODO;
-            case 'in progress':
-                return TaskStatus.IN_PROGRESS;
-            case 'done':
-                return TaskStatus.DONE;
-            default:
-                throw new Error('Invalid task status');
-        }
-    }*/
+    async updateTask(command: UpdateTaskCommand): Promise<Task> {
+        const task = await this.taskRepository.findById(command.taskId);
+        if (!task) throw new Error('Task not found');
+        task.update(command);
+        const updatedTask = await this.taskRepository.update(task);
+        if (!updatedTask) throw new Error('Error updating task');
+        return updatedTask;
+    }
+
+    async deleteTask(command: DeleteTaskCommand): Promise<number> {
+        const task = await this.taskRepository.findById(command.taskId);
+        if (!task)  throw new Error('Task not found');
+        const deletedTask = await this.taskRepository.delete(task.id);
+        if (!deletedTask) throw new Error('Error deleting task');
+        return deletedTask;
+    }
 }
