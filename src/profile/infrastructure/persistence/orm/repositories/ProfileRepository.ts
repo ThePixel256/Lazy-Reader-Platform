@@ -40,4 +40,10 @@ export class ProfileRepository extends TypeOrmRepository<Profile> implements IPr
         const repository = await this.repository();
         return repository.find();
     }
+
+    async existsByEmail(email: string): Promise<boolean> {
+        const repository = await this.repository();
+        const profile = await repository.findOne({ where: { email } });
+        return !!profile;
+    }
 }
