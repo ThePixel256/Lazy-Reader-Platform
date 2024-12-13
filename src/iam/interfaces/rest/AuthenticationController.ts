@@ -5,6 +5,7 @@ import {SignInCommandFromResourceAssembler} from "./transform/SignInCommandFromR
 import {AuthenticatedUserResourceFromEntityAssembler} from "./transform/AuthenticatedUserResourceFromEntityAssembler";
 import {SignUpResource} from "./resources/SignUpResource";
 import {SignUpCommandFromResourceAssembler} from "./transform/SignUpCommandFromResourceAssembler";
+import {AllowAnonymousAttribute} from "../../infrastructure/pipeline/middleware/attributes/AllowAnonymousAttribute";
 
 export class AuthenticationController{
     private readonly router: Router;
@@ -42,7 +43,7 @@ export class AuthenticationController{
          *       500:
          *         description: Internal Server Error.
          */
-        this.router.post('/sign-in', this.signIn.bind(this));
+        this.router.post('/sign-in', AllowAnonymousAttribute.apply, this.signIn.bind(this));
 
         /**
          * @swagger
@@ -69,7 +70,7 @@ export class AuthenticationController{
          *       500:
          *         description: Internal Server Error.
          */
-        this.router.post('/sign-up', this.signUp.bind(this));
+        this.router.post('/sign-up', AllowAnonymousAttribute.apply, this.signUp.bind(this));
     }
 
     public getRoutes() {
