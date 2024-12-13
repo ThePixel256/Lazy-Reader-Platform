@@ -5,34 +5,41 @@ import {User} from "../../../domain/model/aggregates/User";
 import {UserRepository} from "../../../infrastructure/persistence/orm/repositories/UserRepository";
 import {ExternalProfileService} from "../outboundservices/acl/ExternalProfileService";
 import {UnitOfWork} from "../../../../shared/infrastructure/persistence/orm/repositories/UnitOfWork";
+import {TokenService} from "../../../infrastructure/tokens/jwt/services/TokenService";
+import {HashingService} from "../../../infrastructure/hashing/bcrypt/services/HashingService";
 
 export class UserCommandService implements IUserCommandService {
     constructor(
         private readonly userRepository: UserRepository,
         private readonly externalProfileService: ExternalProfileService,
-        private readonly unitOfWork: UnitOfWork
+        private readonly unitOfWork: UnitOfWork,
+        private readonly tokenService: TokenService,
+        private readonly hashingService: HashingService
     ) {
     }
 
-    async signIn(command: SignInCommand): Promise<User> {
+    async signIn(command: SignInCommand): Promise<{ user: User; token: string }> {
         const user = await this.userRepository.findByUsername(command.username);
         if (!user) {
             throw new Error('User not found');
         }
-        return user;
+        const token = this.tokenService.generateToken(user);
+        return { user, token };
     }
 
-    async signUp(command: SignUpCommand): Promise<User> {
+    async signUp(command: SignUpCommand): Promise<{ user: User; token: string }> {
         let savedUser: User | null = null;
-
+        let savedToken = '';
         try {
             await this.unitOfWork.startTransaction();
 
             const transactionalManager = this.unitOfWork.getManager();
             const userRepository = transactionalManager.getRepository(User);
 
-            const newUser = new User(command.username, command.password);
+            const hashedPassword = await this.hashingService.hashPassword(command.password);
+            const newUser = new User(command.username, hashedPassword);
             savedUser = await userRepository.save(newUser);
+            savedToken = this.tokenService.generateToken(savedUser);
 
             await this.externalProfileService.createProfile(
                 command.firstName,
@@ -50,7 +57,11 @@ export class UserCommandService implements IUserCommandService {
             await this.unitOfWork.release();
         }
 
-        return savedUser!;
+        if (!savedUser) {
+            throw new Error("User was not saved successfully.");
+        }
+
+        return { user: savedUser, token: savedToken };
     }
 
 }
