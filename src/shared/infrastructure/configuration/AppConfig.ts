@@ -50,8 +50,8 @@ const AppConfig = convict({
     },
 });
 
-AppConfig.loadFile(path.join(__dirname, 'environments', `${AppConfig.get('env')}.json`));
-
+// This is only for development purposes
+/*AppConfig.loadFile(path.join(__dirname, 'environments', `${AppConfig.get('env')}.json`));*/
 
 AppConfig.validate({ allowed: 'strict' });
 
