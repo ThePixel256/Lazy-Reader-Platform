@@ -23,6 +23,8 @@ import {UnitOfWork} from "./shared/infrastructure/persistence/orm/repositories/U
 import {TokenService} from "./iam/infrastructure/tokens/jwt/services/TokenService";
 import {TokenSettings} from "./iam/infrastructure/tokens/jwt/configuration/TokenSettings";
 import {HashingService} from "./iam/infrastructure/hashing/bcrypt/services/HashingService";
+import {AuthorizeAttribute} from "./iam/infrastructure/pipeline/middleware/attributes/AuthorizeAttribute";
+import {RequestAuthorizationMiddleware} from "./iam/infrastructure/pipeline/middleware/components/RequestAuthorizationMiddleware";
 
 export const createApp = (): Application => {
     const app = express();
@@ -41,6 +43,8 @@ export const createApp = (): Application => {
     const tokenSettings = new TokenSettings('skdiifr145s5h8jotzl127msd');
     const tokenService = new TokenService(tokenSettings);
     const hashingService = new HashingService();
+    const authorizeAttribute = new AuthorizeAttribute(tokenService);
+    const requestAuthorizationMiddleware = new RequestAuthorizationMiddleware(tokenService);
 
     const profileRepository = new ProfileRepository(AppDataSource);
     const profileCommandService = new ProfileCommandService(profileRepository);
@@ -65,15 +69,21 @@ export const createApp = (): Application => {
     const taskQueryService = new TaskQueryService(taskRepository);
     const taskController = new TaskController(taskCommandService, taskQueryService);
 
-    // Routes
+    // Swagger UI
+    swaggerConfig(app);
+
+    // Routes public
     app.use('/api/v1/authentication', userController.getRoutes());
+
+    // Middleware
+    app.use(authorizeAttribute.handle);
+    app.use(requestAuthorizationMiddleware.handle);
+
+    // Routes private
     app.use('/api/v1/boards', boardController.getRoutes());
     app.use('/api/v1/boards', boardMemberController.getRoutes());
     app.use('/api/v1/tasks', taskController.getRoutes());
     app.use('/api/v1/profiles', profileController.getRoutes());
-
-    // Swagger UI
-    swaggerConfig(app);
 
     return app;
 }
