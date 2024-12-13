@@ -9,6 +9,8 @@ export class ProfileCommandService implements IProfileCommandService {
     }
 
     async createProfile(command: CreateProfileCommand): Promise<Profile> {
+        const existingProfileByEmail = await this.profileRepository.existsByEmail(command.email);
+        if (existingProfileByEmail) throw new Error('Profile with this email already exists');
         const userId = new UserId(command.userId);
         const newProfile = new Profile(command.firstName, command.lastName, command.email, userId);
         return await this.profileRepository.save(newProfile);
