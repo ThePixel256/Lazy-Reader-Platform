@@ -20,6 +20,9 @@ import {ProfileController} from "./profile/interfaces/rest/ProfileController";
 import {ProfileContextFacade} from "./profile/interfaces/acl/services/ProfileContextFacade";
 import {ExternalProfileService} from "./iam/application/internal/outboundservices/acl/ExternalProfileService";
 import {UnitOfWork} from "./shared/infrastructure/persistence/orm/repositories/UnitOfWork";
+import {TokenService} from "./iam/infrastructure/tokens/jwt/services/TokenService";
+import {TokenSettings} from "./iam/infrastructure/tokens/jwt/configuration/TokenSettings";
+import {HashingService} from "./iam/infrastructure/hashing/bcrypt/services/HashingService";
 
 export const createApp = (): Application => {
     const app = express();
@@ -35,6 +38,9 @@ export const createApp = (): Application => {
 
     // Dependencies
     const unitOfWork = new UnitOfWork(AppDataSource);
+    const tokenSettings = new TokenSettings('skdiifr145s5h8jotzl127msd');
+    const tokenService = new TokenService(tokenSettings);
+    const hashingService = new HashingService();
 
     const profileRepository = new ProfileRepository(AppDataSource);
     const profileCommandService = new ProfileCommandService(profileRepository);
@@ -44,7 +50,7 @@ export const createApp = (): Application => {
 
     const externalProfileService = new ExternalProfileService(profileContextFacade);
     const userRepository = new UserRepository(AppDataSource);
-    const userCommandService = new UserCommandService(userRepository, externalProfileService, unitOfWork);
+    const userCommandService = new UserCommandService(userRepository, externalProfileService, unitOfWork, tokenService, hashingService);
     //const userQueryService = new UserQueryService(userRepository);
     const userController = new AuthenticationController(userCommandService);
 
