@@ -20,9 +20,9 @@ export class UserCommandService implements IUserCommandService {
 
     async signIn(command: SignInCommand): Promise<{ user: User; token: string }> {
         const user = await this.userRepository.findByUsername(command.username);
-        if (!user) {
-            throw new Error('User not found');
-        }
+        if (!user) throw new Error(`User with username ${command.username} not found.`);
+        const passwordIsValid = await this.hashingService.verifyPassword(command.password, user.password);
+        if (!passwordIsValid) throw new Error(`Invalid password for user with username ${command.username}.`);
         const token = this.tokenService.generateToken(user);
         return { user, token };
     }
@@ -36,8 +36,12 @@ export class UserCommandService implements IUserCommandService {
             const transactionalManager = this.unitOfWork.getManager();
             const userRepository = transactionalManager.getRepository(User);
 
+            const existingUser = await userRepository.findOne({ where: { username: command.username } });
+            if (existingUser) throw new Error(`User with username ${command.username} already exists.`);
+
             const hashedPassword = await this.hashingService.hashPassword(command.password);
             const newUser = new User(command.username, hashedPassword);
+
             savedUser = await userRepository.save(newUser);
             savedToken = this.tokenService.generateToken(savedUser);
 

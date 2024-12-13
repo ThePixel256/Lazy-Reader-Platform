@@ -10,7 +10,7 @@ export class User extends AggregateRoot {
     public username!: string;
 
     @Column()
-    private password!: string;
+    public password!: string;
 
     constructor(username?: string, password?: string) {
         super();
