@@ -9,7 +9,8 @@ export function swaggerConfig(app: Application){
         definition: {
             openapi: '3.0.0',
             info: {
-                title: 'SHOP API',
+                title: 'Task API',
+                description: 'A simple API to manage tasks and boards',
                 version: '1.0.0',
                 license: {
                     name: 'MIT',
